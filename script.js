@@ -8,7 +8,7 @@ const clearBtn = document.getElementById('clearBtn');
 const copyBtn = document.getElementById('copyBtn');
 const copyMessage = document.getElementById('copyMessage');
 
-// 「改行を削除する」ボタンの処理
+// 「変換する」ボタンの処理
 removeBtn.addEventListener('click', () => {
     const text = inputText.value;
     
@@ -17,10 +17,16 @@ removeBtn.addEventListener('click', () => {
         return;
     }
 
-    // 正規表現で改行（\n, \r\n, \r）をすべて空文字に置換
-    const removedText = text.replace(/\r?\n/g, '');
+    // 選択されているラジオボタンの値を取得
+    const selectedOption = document.querySelector('input[name="replaceOption"]:checked').value;
     
-    outputText.value = removedText;
+    // 置換後の文字列を設定（removeなら空文字、spaceなら半角スペース）
+    const replacement = selectedOption === 'space' ? ' ' : '';
+
+    // 正規表現で改行（\n, \r\n, \r）を置換
+    const resultText = text.replace(/\r?\n/g, replacement);
+    
+    outputText.value = resultText;
 });
 
 // 「クリア」ボタンの処理
@@ -41,10 +47,8 @@ copyBtn.addEventListener('click', () => {
 
     // クリップボードAPIを使用してコピー
     navigator.clipboard.writeText(textToCopy).then(() => {
-        // コピー成功時のメッセージ表示
         copyMessage.classList.remove('hidden');
         
-        // 2秒後にメッセージを非表示にする
         setTimeout(() => {
             copyMessage.classList.add('hidden');
         }, 2000);
